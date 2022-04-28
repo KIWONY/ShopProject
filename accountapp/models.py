@@ -9,4 +9,4 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.email)
