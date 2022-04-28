@@ -6,6 +6,7 @@ from accountapp.models import Comment
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         comments = serializers.StringRelatedField(many=True)
+        created_at = serializers.DateTimeField()
         model = Comment
 
-        fields = ("email","password","comment","create_at")
+        fields = ("email","password","comment","created_at")
