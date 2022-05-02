@@ -3,7 +3,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import status
+from rest_framework import status, generics, mixins
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
@@ -11,6 +11,37 @@ from rest_framework.views import APIView
 
 from accountapp.models import Comment
 from accountapp.serializers import CommentSerializer
+
+
+# https://www.django-rest-framework.org/api-guide/generic-views/#generic-views
+class CommentAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin,mixins.RetrieveModelMixin,mixins.CreateModelMixin):
+    serializer_class = CommentSerializer
+
+    queryset = Comment.objects.all()
+
+    # lookup_field의 default는 pk임
+    lookup_field = 'id'
+
+    def get(self,request,id=None):
+        if id:
+            return self.retrieve(request)
+
+        return self.list(request)
+
+    def post(self,request):
+        return self.create(request)
+
+    def put(self,request,id=None):
+        return self.update(request, id)
+
+    def delete(self,request,id=None):
+        return self.destroy(request,id)
+
+
+
+
+
+
 
 
 # https://www.django-rest-framework.org/api-guide/views/#class-based-views
