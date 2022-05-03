@@ -4,8 +4,10 @@ from django.shortcuts import render
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status, generics, mixins
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -22,6 +24,9 @@ class CommentAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixins.Upda
     # lookup_field의 default는 pk임
     lookup_field = 'id'
 
+    # authentication
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self,request,id=None):
         if id:
             return self.retrieve(request)
@@ -36,12 +41,6 @@ class CommentAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixins.Upda
 
     def delete(self,request,id=None):
         return self.destroy(request,id)
-
-
-
-
-
-
 
 
 # https://www.django-rest-framework.org/api-guide/views/#class-based-views
