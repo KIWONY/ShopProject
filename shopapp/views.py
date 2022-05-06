@@ -1,15 +1,17 @@
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
 # Create your views here.
-from django.views.generic import CreateView
+from django.urls import reverse_lazy, reverse
+from django.views.generic import CreateView, TemplateView
 
+from shopapp.forms import ProductCreationForm
 from shopapp.models import Product
 
 
-# class ShopCreateView(CreateView):
-#     model = Product
-#     # form_class = ShopCreationForm
-#     template_name = "shopapp/create.html"
+def main(request):
+    return render(request,"shopapp/main.html")
+
 
 
 
