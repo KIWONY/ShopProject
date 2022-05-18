@@ -17,13 +17,19 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.urls import reverse_lazy
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 from ShopProject import settings
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('shops/',include('shopapp.urls')),
     path('accounts/',include("accountapp.urls")),
+    # simple jwt token 발행/검증/갱신
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
 ]+ static(settings.MEDIA_URL,document_root= settings.MEDIA_ROOT)
 urlpatterns + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
