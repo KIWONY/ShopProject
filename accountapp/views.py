@@ -1,9 +1,7 @@
-from django.http import JsonResponse
-
 
 # Create your views here.
 
-from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
 
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -19,65 +17,44 @@ from rest_framework.views import APIView
 # https://www.django-rest-framework.org/api-guide/views/#class-based-views
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from accountapp.serializers import JWTSerializer, JWTLoginSerializer
+from accountapp.serializers import UserCreateSerializer
 
 
 # -----------회원가입---------------
-class SignUpView(APIView):
-    
-    # 권한
-    permission_classes = (AllowAny,)
-
-    def post(self, request):
-        serializer = JWTSerializer(data=request.data)
-
-        if serializer.is_valid(raise_exception=False):
-            serializer.save()
-
-            status_code = status.HTTP_201_CREATED
-            token = RefreshToken()
-            refresh = str(token)
-            access = str(token.access_token)
-
-            response = {
-                "success": True,
-                "statusCode" : status_code,
-                "message" : "Sign up!!!!!",
-                "user" : serializer.data,
-                "access" : access,
-                "refresh" : refresh
-
-            }
-
-            return Response(response,status=status_code)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['GET', 'POST'])
+@permission_classes((AllowAny,))
+def signup(request):
+    serializer = UserCreateSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
+        return Response(serializer.data,status=201)
 
 
-#---------------로그인-------------
-class JWTLoginView(APIView):
 
-    permission_classes = (AllowAny,)
-
-    def post(self, request):
-        serializer = JWTLoginSerializer(data=request.data)
-
-        if serializer.is_valid(raise_exception=False):
-            serializer.save()
-            username = serializer.validated_data["username"]
-            email = serializer.validated_data["email"]
-            user = serializer.validated_data["user"]
-            refresh = serializer.validated_data["refresh"]
-            access = serializer.validated_data["access"]
-            status_code = status.HTTP_200_OK
-
-            return JsonResponse({
-                "username" : username,
-                "email" : email,
-                "user" :user,
-                "refresh" : refresh,
-                "access" : access,
-                "status_code" : status_code
-            })
-
-
+# #---------------로그인-------------
+# class JWTLoginView(APIView):
+#
+#     # permission_classes = (AllowAny,)
+#
+#     def post(self, request):
+#         serializer = JWTLoginSerializer(data=request.data)
+#
+#         if serializer.is_valid(raise_exception=False):
+#             serializer.save()
+#             username = serializer.validated_data["username"]
+#             email = serializer.validated_data["email"]
+#             user = serializer.validated_data["user"]
+#             refresh = serializer.validated_data["refresh"]
+#             access = serializer.validated_data["access"]
+#             status_code = status.HTTP_200_OK
+#
+#             return JsonResponse({
+#                 "username" : username,
+#                 "email" : email,
+#                 "user" :user,
+#                 "refresh" : refresh,
+#                 "access" : access,
+#                 "status_code" : status_code
+#             })
+#
+#

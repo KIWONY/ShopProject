@@ -13,8 +13,7 @@ import datetime
 from datetime import timedelta
 from pathlib import Path
 import environ, os
-from django.urls import reverse_lazy
-# from django.utils.encoding import smart_text
+
 
 env = environ.Env(
     DEBUG=(bool,False)
@@ -49,12 +48,14 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'bootstrap4',
     'rest_framework',
-    # 'rest_framework.authtoken',
+    'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'accountapp',
     'shopapp',
     'loginapp',
 ]
+# drf 회원가입
+AUTH_USER_MODEL = "accountapp.User"
 
 # drf JWT 로그인
 
@@ -62,22 +63,25 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     # 로그인 여부
-    'DEFAULT_PERMISSION_CLASSES': (
+    'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    ),
-    # 로그인 클래스
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.permissions.IsAdminUser',
+        'rest_framework.permissions.AllowAny',
+    ],
 
+    'DEFAULT_RENDER_CLASSES':[
+        # json로
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-    #     'rest_framework.authentication.SessionAuthentication',
-    #     'rest_framework.authentication.BasicAuthentication',
-    # ),
+    ],
 }
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#settings
 SIMPLE_JWT = {
