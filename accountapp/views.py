@@ -1,6 +1,6 @@
 
 # Create your views here.
-
+from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
 
 from rest_framework.permissions import AllowAny
@@ -17,7 +17,7 @@ from rest_framework.views import APIView
 # https://www.django-rest-framework.org/api-guide/views/#class-based-views
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from accountapp.serializers import UserCreateSerializer
+from accountapp.serializers import UserCreateSerializer, JWTLoginSerializer
 
 
 # -----------회원가입---------------
@@ -32,29 +32,14 @@ def signup(request):
 
 
 # #---------------로그인-------------
-# class JWTLoginView(APIView):
-#
-#     # permission_classes = (AllowAny,)
-#
-#     def post(self, request):
-#         serializer = JWTLoginSerializer(data=request.data)
-#
-#         if serializer.is_valid(raise_exception=False):
-#             serializer.save()
-#             username = serializer.validated_data["username"]
-#             email = serializer.validated_data["email"]
-#             user = serializer.validated_data["user"]
-#             refresh = serializer.validated_data["refresh"]
-#             access = serializer.validated_data["access"]
-#             status_code = status.HTTP_200_OK
-#
-#             return JsonResponse({
-#                 "username" : username,
-#                 "email" : email,
-#                 "user" :user,
-#                 "refresh" : refresh,
-#                 "access" : access,
-#                 "status_code" : status_code
-#             })
-#
-#
+class JWTLoginView(generics.GenericAPIView):
+    serializer_class = JWTLoginSerializer
+    permission_classes = ((AllowAny,))
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+        token = serializer.validated_data
+        return Response({"token":token},status=status.HTTP_200_OK)
+

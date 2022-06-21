@@ -1,13 +1,13 @@
 from django.urls import path
-from rest_framework_simplejwt import views as jwt_views
+
 
 from . import views
+from .views import JWTLoginView
 
 app_name = "accountapp"
 
 urlpatterns = [
-    # 로그인
     path('accounts',views.signup),
-    # path('login' , JWTLoginView.as_view(), name="login")
+    path('login' , JWTLoginView.as_view(), name="login")
 
 ]
