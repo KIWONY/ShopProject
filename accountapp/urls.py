@@ -2,12 +2,12 @@ from django.urls import path
 
 
 from . import views
-from .views import JWTLoginView
+from .views import JWTLoginView, SignUpView
 
 app_name = "accountapp"
 
 urlpatterns = [
-    path('accounts',views.signup),
+    path('accounts',SignUpView.as_view()),
     path('login' , JWTLoginView.as_view(), name="login")
 
 ]

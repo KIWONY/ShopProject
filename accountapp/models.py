@@ -7,6 +7,7 @@ from django.contrib.auth.base_user import BaseUserManager
 # ----------회원 가입 Custom User Model------------
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.utils import timezone
+from django.utils.timezone import now
 
 
 class UserManager(BaseUserManager):
@@ -53,7 +54,7 @@ class User(AbstractUser, PermissionsMixin):
     email = models.EmailField(verbose_name="email",max_length=300,unique=True)
     username = models.CharField(max_length=200)
     gender = models.SmallIntegerField(choices=GENDER_CHOICE)
-    date_joined = models.DateTimeField(("date joined"),default=timezone.now)
+    date_joined = models.DateTimeField(default=now, editable=False)
 
     objects = UserManager()
 

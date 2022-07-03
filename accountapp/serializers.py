@@ -1,10 +1,8 @@
-
 from rest_framework import serializers
 
 
 #-------회원가입(사용자 등록) --------
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from accountapp.models import User
 
 
@@ -29,12 +27,6 @@ class JWTLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["email","password"]
-#
-    def create(self, validate_date):
-        pass
-
-    def update(self,instance,validate_data):
-        pass
 
     def validate(self,data):
         email = data["email"]

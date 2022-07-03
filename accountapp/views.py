@@ -2,6 +2,7 @@
 # Create your views here.
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.generics import CreateAPIView
 
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -17,18 +18,29 @@ from rest_framework.views import APIView
 # https://www.django-rest-framework.org/api-guide/views/#class-based-views
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from accountapp.models import User
 from accountapp.serializers import UserCreateSerializer, JWTLoginSerializer
 
 
 # -----------회원가입---------------
-@api_view(['GET', 'POST'])
-@permission_classes((AllowAny,))
-def signup(request):
-    serializer = UserCreateSerializer(data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        serializer.save()
-        return Response(serializer.data,status=201)
+# @api_view(['GET', 'POST'])
+# @permission_classes((AllowAny,))
+# def signup(request):
+#     serializer = UserCreateSerializer(data=request.data)
+#     if serializer.is_valid(raise_exception=True):
+#         serializer.save()
+#         return Response(serializer.data,status=201)
 
+
+class SignUpView(CreateAPIView):
+    permission_classes = ((AllowAny,))
+    queryset = User.objects.all()
+    serializer_class = UserCreateSerializer
+
+    def perform_create(self, serializer):
+        if serializer.is_valid(raise_exception= True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 # #---------------로그인-------------
